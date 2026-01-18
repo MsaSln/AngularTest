@@ -1,0 +1,87 @@
+.dashboard-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  color: #333;
+}
+
+.btn-logout {
+  padding: 0.75rem 1.5rem;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-logout:hover {
+  background: #c0392b;
+}
+
+.dashboard-content {
+  display: grid;
+  gap: 2rem;
+}
+
+.welcome-card,
+.info-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-card h2 {
+  margin-top: 0;
+  color: #667eea;
+  margin-bottom: 1.5rem;
+}
+
+.user-info p {
+  margin: 0.75rem 0;
+  color: #555;
+  font-size: 1rem;
+}
+
+.user-info strong {
+  color: #333;
+  margin-right: 0.5rem;
+}
+
+.info-card h3 {
+  margin-top: 0;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.info-card p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.success-badge {
+  background: #d5f4e6;
+  color: #27ae60;
+  padding: 0.75rem;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
