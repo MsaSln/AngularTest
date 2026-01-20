@@ -232,6 +232,39 @@
   padding: 1.5rem;
 }
 
+/* Role Form Grid Layout */
+.role-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.role-basic-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.role-permissions-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.role-permissions-column .form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+.role-permissions-column .form-group label {
+  margin-bottom: 0.75rem;
+}
+
+.role-permissions-column .permissions-container {
+  flex: 1;
+  min-height: 400px;
+}
+
 .modal-footer {
   display: flex;
   justify-content: flex-end;
@@ -409,5 +442,14 @@
 
   .permission-checkboxes-grid {
     grid-template-columns: 1fr;
+  }
+
+  .role-form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .role-permissions-column .permissions-container {
+    min-height: 300px;
   }
 }
