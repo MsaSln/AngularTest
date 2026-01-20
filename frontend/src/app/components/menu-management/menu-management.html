@@ -9,7 +9,16 @@
   <div class="management-content">
     <!-- Groups List -->
     <div class="groups-panel">
-      <h2>Menu Groups</h2>
+      <div class="panel-header">
+        <h2>Menu Groups</h2>
+        <button
+          class="btn btn-export"
+          (click)="exportGroups()"
+          *hasPermission="'menu.groups.export'"
+          title="Export to Excel">
+          📊 Export to Excel
+        </button>
+      </div>
       <div class="groups-list">
         @for (group of menuGroups(); track group.id) {
           <div

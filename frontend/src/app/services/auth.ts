@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, switchMap } from 'rxjs/operators';
+import { PermissionService } from './permission.service';
 
 export interface User {
   id: number;
@@ -21,6 +22,7 @@ export class Auth {
   private apiUrl = 'http://localhost:3000';
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
+  private permissionService = inject(PermissionService);
 
   constructor(private http: HttpClient) {
     const storedUser = localStorage.getItem('currentUser');
@@ -28,6 +30,11 @@ export class Auth {
       storedUser ? JSON.parse(storedUser) : null
     );
     this.currentUser = this.currentUserSubject.asObservable();
+
+    // Load permissions if user is already logged in
+    if (storedUser) {
+      this.permissionService.loadMyPermissions().subscribe();
+    }
   }
 
   public get currentUserValue(): User | null {
@@ -45,7 +52,13 @@ export class Auth {
           localStorage.setItem('token', response.access_token);
           localStorage.setItem('currentUser', JSON.stringify(response.user));
           this.currentUserSubject.next(response.user);
-        })
+        }),
+        switchMap((response) =>
+          this.permissionService.loadMyPermissions().pipe(
+            tap(() => console.log('Permissions loaded successfully')),
+            switchMap(() => [response])
+          )
+        )
       );
   }
 
@@ -61,6 +74,7 @@ export class Auth {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
+    this.permissionService.clearPermissions();
   }
 
   getToken(): string | null {

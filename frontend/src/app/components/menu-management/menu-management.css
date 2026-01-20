@@ -40,6 +40,7 @@
   font-size: 1.25rem;
 }
 
+.panel-header,
 .items-header {
   display: flex;
   justify-content: space-between;
@@ -47,6 +48,7 @@
   margin-bottom: 1.5rem;
 }
 
+.panel-header h2,
 .items-header h2 {
   margin: 0;
 }
@@ -184,6 +186,15 @@
 
 .btn-secondary:hover {
   background: var(--text-secondary);
+}
+
+.btn-export {
+  background: var(--accent-success);
+  color: white;
+}
+
+.btn-export:hover {
+  background: #27ae60;
 }
 
 /* Badge */

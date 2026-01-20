@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MenuService } from '../../services/menu.service';
+import { HasPermissionDirective } from '../../directives/has-permission.directive';
 import {
   MenuGroup,
   MenuItem,
@@ -13,7 +14,7 @@ import {
 @Component({
   selector: 'app-menu-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HasPermissionDirective],
   templateUrl: './menu-management.html',
   styleUrl: './menu-management.css',
 })
@@ -211,5 +212,12 @@ export class MenuManagement implements OnInit {
     value: CreateMenuItemDto[K]
   ): void {
     this.itemForm.update(f => ({ ...f, [field]: value }));
+  }
+
+  // Excel export functionality (placeholder for permission demonstration)
+  exportGroups(): void {
+    // This is a placeholder to demonstrate permission-controlled functionality
+    // Actual Excel export implementation would go here
+    alert('Excel export functionality - This button is only visible to users with "menu.groups.export" permission');
   }
 }
