@@ -40,14 +40,15 @@ export class HasPermissionDirective implements OnInit, OnDestroy {
   }
 
   private updateView() {
+    // Always clear first to prevent duplicates
+    this.viewContainer.clear();
+
     const hasPermission = this.logicalOp === 'AND'
       ? this.permissionService.hasAllPermissions(this.permissions)
       : this.permissionService.hasAnyPermission(this.permissions);
 
     if (hasPermission) {
       this.viewContainer.createEmbeddedView(this.templateRef);
-    } else {
-      this.viewContainer.clear();
     }
   }
 }

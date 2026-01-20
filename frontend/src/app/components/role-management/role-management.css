@@ -352,15 +352,14 @@
   text-transform: capitalize;
 }
 
-.permission-checkboxes {
+.permission-checkboxes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
   padding: 1rem;
 }
 
 .permission-checkbox {
-  margin-bottom: 0.75rem;
-}
-
-.permission-checkbox:last-child {
   margin-bottom: 0;
 }
 
@@ -436,5 +435,9 @@
 
   .role-actions .btn {
     width: 100%;
+  }
+
+  .permission-checkboxes-grid {
+    grid-template-columns: 1fr;
   }
 }
