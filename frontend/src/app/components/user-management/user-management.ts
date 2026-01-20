@@ -7,6 +7,13 @@ import { HasPermissionDirective } from '../../directives/has-permission.directiv
 import { User, CreateUserDto, UpdateUserDto } from '../../models/user.model';
 import { Role } from '../../models/rbac.model';
 
+interface UserFormData {
+  username?: string;
+  email?: string;
+  roleIds?: number[];
+  isActive?: boolean;
+}
+
 @Component({
   selector: 'app-user-management',
   standalone: true,
@@ -23,7 +30,7 @@ export class UserManagement implements OnInit {
   showPasswordModal = signal<boolean>(false);
 
   // Form data
-  userForm = signal<CreateUserDto | UpdateUserDto>({
+  userForm = signal<UserFormData>({
     username: '',
     email: '',
     roleIds: []
@@ -161,9 +168,9 @@ export class UserManagement implements OnInit {
     });
   }
 
-  updateFormField<K extends keyof CreateUserDto>(
+  updateFormField<K extends keyof UserFormData>(
     field: K,
-    value: CreateUserDto[K]
+    value: UserFormData[K]
   ): void {
     this.userForm.update(f => ({ ...f, [field]: value }));
   }
