@@ -216,7 +216,7 @@
               id="itemLocation"
               class="form-control"
               [value]="itemForm().location"
-              (change)="updateItemFormField('location', $any($event.target).value as MenuLocation)">
+              (change)="updateItemFormField('location', $any($event.target).value)">
               <option [value]="MenuLocation.SIDEBAR">Sidebar Only</option>
               <option [value]="MenuLocation.HEADER">Header Only</option>
               <option [value]="MenuLocation.BOTH">Both Sidebar & Header</option>
