@@ -159,7 +159,7 @@
   font-style: italic;
 }
 
-/* Modal */
+/* Modal Overlay */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -167,22 +167,70 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 2000;
+  animation: fadeIn 0.3s ease;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Slide-in Panel from Right */
 .modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100vh;
   background: var(--bg-primary);
-  border-radius: 8px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
+  box-shadow: -4px 0 20px var(--shadow-hover);
+  border-left: 1px solid var(--border-color);
   overflow-y: auto;
-  box-shadow: 0 4px 20px var(--shadow-hover);
-  border: 1px solid var(--border-color);
   transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: slideInRight 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Password Modal - Center Popup */
+.modal-password {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  height: auto;
+  max-height: 90vh;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px var(--shadow-hover);
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
 }
 
 .modal-header {
@@ -191,6 +239,10 @@
   align-items: center;
   padding: 1.5rem;
   border-bottom: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .modal-header h2 {
@@ -218,6 +270,8 @@
 
 .modal-body {
   padding: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .modal-footer {
@@ -226,6 +280,9 @@
   gap: 0.75rem;
   padding: 1.5rem;
   border-top: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  position: sticky;
+  bottom: 0;
 }
 
 /* Form */
@@ -390,6 +447,10 @@
   }
 
   .modal {
+    width: 100%;
+  }
+
+  .modal-password {
     width: 95%;
   }
 }
