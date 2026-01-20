@@ -3,22 +3,25 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-tertiary);
+  transition: background-color 0.3s ease;
 }
 
 .register-card {
-  background: white;
+  background: var(--bg-primary);
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow);
   width: 100%;
   max-width: 400px;
+  border: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .register-card h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .form-group {
@@ -28,46 +31,51 @@
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #555;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .form-control {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 1rem;
   box-sizing: border-box;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
 .form-control:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--accent-primary);
 }
 
 .error {
-  color: #e74c3c;
+  color: var(--accent-danger);
   margin-bottom: 1rem;
   padding: 0.5rem;
-  background: #fadbd8;
+  background: var(--bg-secondary);
   border-radius: 4px;
   text-align: center;
+  border: 1px solid var(--accent-danger);
 }
 
 .success {
-  color: #27ae60;
+  color: var(--accent-success);
   margin-bottom: 1rem;
   padding: 0.5rem;
-  background: #d5f4e6;
+  background: var(--bg-secondary);
   border-radius: 4px;
   text-align: center;
+  border: 1px solid var(--accent-success);
 }
 
 .btn-primary {
   width: 100%;
   padding: 0.75rem;
-  background: #667eea;
+  background: var(--accent-primary);
   color: white;
   border: none;
   border-radius: 4px;
@@ -78,7 +86,7 @@
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #5568d3;
+  background: var(--accent-secondary);
 }
 
 .btn-primary:disabled {
@@ -89,11 +97,11 @@
 .login-link {
   text-align: center;
   margin-top: 1rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .login-link a {
-  color: #667eea;
+  color: var(--accent-primary);
   text-decoration: none;
   font-weight: 600;
 }

@@ -1,28 +1,28 @@
 .dashboard-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem;
+  min-height: calc(100vh - 60px);
+  padding: 0;
 }
 
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: var(--bg-primary);
   padding: 1.5rem 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow);
   margin-bottom: 2rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .dashboard-header h1 {
   margin: 0;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .btn-logout {
   padding: 0.75rem 1.5rem;
-  background: #e74c3c;
+  background: var(--accent-danger);
   color: white;
   border: none;
   border-radius: 4px;
@@ -43,45 +43,48 @@
 
 .welcome-card,
 .info-card {
-  background: white;
+  background: var(--bg-primary);
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow);
+  border: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .welcome-card h2 {
   margin-top: 0;
-  color: #667eea;
+  color: var(--accent-primary);
   margin-bottom: 1.5rem;
 }
 
 .user-info p {
   margin: 0.75rem 0;
-  color: #555;
+  color: var(--text-secondary);
   font-size: 1rem;
 }
 
 .user-info strong {
-  color: #333;
+  color: var(--text-primary);
   margin-right: 0.5rem;
 }
 
 .info-card h3 {
   margin-top: 0;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
 .info-card p {
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
 .success-badge {
-  background: #d5f4e6;
-  color: #27ae60;
+  background: var(--accent-success);
+  color: white;
   padding: 0.75rem;
   border-radius: 4px;
   font-weight: 600;
   margin-bottom: 1rem;
+  opacity: 0.9;
 }
