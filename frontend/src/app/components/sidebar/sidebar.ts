@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuService } from '../../services/menu.service';
@@ -15,6 +15,8 @@ export class Sidebar implements OnInit {
   menuGroups = signal<MenuGroup[]>([]);
   isCollapsed = signal<boolean>(false);
   expandedGroups = signal<Set<number>>(new Set());
+
+  @Output() collapsedChange = new EventEmitter<boolean>();
 
   constructor(private menuService: MenuService) {}
 
@@ -45,7 +47,9 @@ export class Sidebar implements OnInit {
   }
 
   toggleSidebar(): void {
-    this.isCollapsed.set(!this.isCollapsed());
+    const newState = !this.isCollapsed();
+    this.isCollapsed.set(newState);
+    this.collapsedChange.emit(newState);
   }
 
   toggleGroup(groupId: number): void {

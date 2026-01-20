@@ -20,7 +20,7 @@
 }
 
 /* When sidebar is collapsed */
-:global(.sidebar.collapsed) ~ .main-wrapper {
+.main-wrapper.sidebar-collapsed {
   margin-left: 60px;
 }
 

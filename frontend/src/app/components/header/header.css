@@ -157,7 +157,7 @@
 }
 
 /* When sidebar is collapsed */
-:global(.sidebar.collapsed) ~ * .header {
+:host-context(.sidebar-collapsed) .header {
   left: 60px;
 }
 

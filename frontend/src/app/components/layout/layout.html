@@ -1,6 +1,6 @@
 <div class="app-container">
-  <app-sidebar></app-sidebar>
-  <div class="main-wrapper">
+  <app-sidebar (collapsedChange)="onSidebarCollapsedChange($event)"></app-sidebar>
+  <div class="main-wrapper" [class.sidebar-collapsed]="sidebarCollapsed()">
     <app-header></app-header>
     <main class="main-content">
       <router-outlet></router-outlet>
