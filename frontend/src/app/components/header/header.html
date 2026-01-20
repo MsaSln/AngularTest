@@ -1,0 +1,44 @@
+<header class="header">
+  <div class="header-left">
+    <h1 class="app-title">Angular App</h1>
+  </div>
+
+  <nav class="header-nav">
+    @for (item of menuItems(); track item.id) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        class="nav-link"
+        [title]="item.description || item.title">
+        @if (item.icon) {
+          <span class="nav-icon">{{ item.icon }}</span>
+        }
+        <span class="nav-title">{{ item.title }}</span>
+      </a>
+    }
+  </nav>
+
+  <div class="header-right">
+    @if (currentUser()) {
+      <div class="user-menu">
+        <button class="user-btn" (click)="toggleUserMenu()">
+          <span class="user-icon">👤</span>
+          <span class="user-name">{{ currentUser()?.username }}</span>
+          <span class="dropdown-icon">▼</span>
+        </button>
+
+        @if (showUserMenu()) {
+          <div class="user-dropdown">
+            <a [routerLink]="['/menu-management']" class="dropdown-item">
+              <span>⚙️</span> Menu Management
+            </a>
+            <div class="dropdown-divider"></div>
+            <button (click)="logout()" class="dropdown-item logout-btn">
+              <span>🚪</span> Logout
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</header>

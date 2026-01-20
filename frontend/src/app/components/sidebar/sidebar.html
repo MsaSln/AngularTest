@@ -1,0 +1,59 @@
+<aside class="sidebar" [class.collapsed]="isCollapsed()">
+  <div class="sidebar-header">
+    <button class="toggle-btn" (click)="toggleSidebar()" title="Toggle Sidebar">
+      <span class="icon">{{ isCollapsed() ? '☰' : '✕' }}</span>
+    </button>
+    @if (!isCollapsed()) {
+      <h2 class="sidebar-title">Menu</h2>
+    }
+  </div>
+
+  <nav class="sidebar-nav">
+    @for (group of menuGroups(); track group.id) {
+      <div class="menu-group">
+        <button
+          class="group-header"
+          (click)="toggleGroup(group.id)"
+          [class.expanded]="isGroupExpanded(group.id)">
+          @if (group.icon) {
+            <span class="group-icon">{{ group.icon }}</span>
+          }
+          @if (!isCollapsed()) {
+            <span class="group-name">{{ group.name }}</span>
+            <span class="expand-icon">{{ isGroupExpanded(group.id) ? '▼' : '▶' }}</span>
+          }
+        </button>
+
+        @if (isGroupExpanded(group.id) && !isCollapsed()) {
+          <ul class="menu-items">
+            @for (item of group.menuItems; track item.id) {
+              <li class="menu-item">
+                <a [routerLink]="item.route" routerLinkActive="active" class="menu-link">
+                  @if (item.icon) {
+                    <span class="item-icon">{{ item.icon }}</span>
+                  }
+                  <span class="item-title">{{ item.title }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        }
+
+        @if (isGroupExpanded(group.id) && isCollapsed()) {
+          <div class="collapsed-tooltip">
+            <div class="tooltip-header">{{ group.name }}</div>
+            <ul class="tooltip-items">
+              @for (item of group.menuItems; track item.id) {
+                <li>
+                  <a [routerLink]="item.route" routerLinkActive="active">
+                    {{ item.title }}
+                  </a>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    }
+  </nav>
+</aside>

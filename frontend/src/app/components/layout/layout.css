@@ -1,0 +1,35 @@
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background: #ecf0f1;
+}
+
+.main-wrapper {
+  flex: 1;
+  margin-left: 280px;
+  transition: margin-left 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  margin-top: 60px;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* When sidebar is collapsed */
+:global(.sidebar.collapsed) ~ .main-wrapper {
+  margin-left: 60px;
+}
+
+@media (max-width: 768px) {
+  .main-wrapper {
+    margin-left: 0;
+  }
+
+  .main-content {
+    padding: 1rem;
+  }
+}

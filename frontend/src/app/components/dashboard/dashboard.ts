@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { Auth, User } from '../../services/auth';
 
 @Component({
@@ -12,16 +11,11 @@ import { Auth, User } from '../../services/auth';
 export class Dashboard implements OnInit {
   currentUser: User | null = null;
 
-  constructor(private authService: Auth, private router: Router) {}
+  constructor(private authService: Auth) {}
 
   ngOnInit(): void {
     this.authService.currentUser.subscribe((user) => {
       this.currentUser = user;
     });
-  }
-
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }

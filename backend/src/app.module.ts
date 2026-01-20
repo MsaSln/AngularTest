@@ -3,7 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { MenuModule } from './menu/menu.module';
 import { User } from './users/user.entity';
+import { MenuGroup } from './menu/entities/menu-group.entity';
+import { MenuItem } from './menu/entities/menu-item.entity';
 
 @Module({
   imports: [
@@ -19,7 +22,7 @@ import { User } from './users/user.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [User],
+        entities: [User, MenuGroup, MenuItem],
         synchronize: true, // Set to false in production
         options: {
           encrypt: false,
@@ -30,6 +33,7 @@ import { User } from './users/user.entity';
     }),
     UsersModule,
     AuthModule,
+    MenuModule,
   ],
 })
 export class AppModule {}

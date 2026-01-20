@@ -1,0 +1,267 @@
+<div class="menu-management">
+  <div class="management-header">
+    <h1>Menu Management</h1>
+    <button class="btn btn-primary" (click)="openGroupForm()">
+      ➕ Add Menu Group
+    </button>
+  </div>
+
+  <div class="management-content">
+    <!-- Groups List -->
+    <div class="groups-panel">
+      <h2>Menu Groups</h2>
+      <div class="groups-list">
+        @for (group of menuGroups(); track group.id) {
+          <div
+            class="group-card"
+            [class.selected]="selectedGroup()?.id === group.id"
+            (click)="selectGroup(group)">
+            <div class="group-info">
+              @if (group.icon) {
+                <span class="group-icon">{{ group.icon }}</span>
+              }
+              <div class="group-details">
+                <h3>{{ group.name }}</h3>
+                <p class="group-meta">
+                  {{ group.menuItems.length }} items • Order: {{ group.order }}
+                  @if (!group.isActive) {
+                    <span class="badge inactive">Inactive</span>
+                  }
+                </p>
+              </div>
+            </div>
+            <div class="group-actions">
+              <button class="btn-icon" (click)="openGroupForm(group); $event.stopPropagation()" title="Edit">
+                ✏️
+              </button>
+              <button class="btn-icon" (click)="deleteGroup(group); $event.stopPropagation()" title="Delete">
+                🗑️
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <p class="empty-message">No menu groups yet. Create one to get started!</p>
+        }
+      </div>
+    </div>
+
+    <!-- Items List -->
+    <div class="items-panel">
+      @if (selectedGroup()) {
+        <div class="items-header">
+          <h2>{{ selectedGroup()!.name }} - Items</h2>
+          <button class="btn btn-secondary" (click)="openItemForm()">
+            ➕ Add Item
+          </button>
+        </div>
+
+        <div class="items-list">
+          @for (item of selectedGroup()!.menuItems; track item.id) {
+            <div class="item-card">
+              <div class="item-info">
+                @if (item.icon) {
+                  <span class="item-icon">{{ item.icon }}</span>
+                }
+                <div class="item-details">
+                  <h4>{{ item.title }}</h4>
+                  @if (item.description) {
+                    <p class="item-description">{{ item.description }}</p>
+                  }
+                  <p class="item-meta">
+                    Route: <code>{{ item.route }}</code> •
+                    Location: <span class="badge">{{ item.location }}</span> •
+                    Order: {{ item.order }}
+                    @if (!item.isActive) {
+                      <span class="badge inactive">Inactive</span>
+                    }
+                  </p>
+                </div>
+              </div>
+              <div class="item-actions">
+                <button class="btn-icon" (click)="openItemForm(item)" title="Edit">
+                  ✏️
+                </button>
+                <button class="btn-icon" (click)="deleteItem(item)" title="Delete">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          } @empty {
+            <p class="empty-message">No items in this group. Add one to get started!</p>
+          }
+        </div>
+      } @else {
+        <div class="no-selection">
+          <p>👈 Select a menu group to view and manage its items</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Group Form Modal -->
+  @if (showGroupForm()) {
+    <div class="modal-overlay" (click)="closeGroupForm()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ editingGroup() ? 'Edit' : 'Create' }} Menu Group</h2>
+          <button class="btn-close" (click)="closeGroupForm()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="groupName">Name *</label>
+            <input
+              id="groupName"
+              type="text"
+              class="form-control"
+              [value]="groupForm().name"
+              (input)="updateGroupFormField('name', $any($event.target).value)"
+              placeholder="e.g., Main Menu">
+          </div>
+
+          <div class="form-group">
+            <label for="groupIcon">Icon (emoji)</label>
+            <input
+              id="groupIcon"
+              type="text"
+              class="form-control"
+              [value]="groupForm().icon || ''"
+              (input)="updateGroupFormField('icon', $any($event.target).value)"
+              placeholder="e.g., 📁">
+          </div>
+
+          <div class="form-group">
+            <label for="groupOrder">Order</label>
+            <input
+              id="groupOrder"
+              type="number"
+              class="form-control"
+              [value]="groupForm().order"
+              (input)="updateGroupFormField('order', +$any($event.target).value)">
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [checked]="groupForm().isActive"
+                (change)="updateGroupFormField('isActive', $any($event.target).checked)">
+              Active
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeGroupForm()">Cancel</button>
+          <button class="btn btn-primary" (click)="saveGroup()">Save</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Item Form Modal -->
+  @if (showItemForm()) {
+    <div class="modal-overlay" (click)="closeItemForm()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ editingItem() ? 'Edit' : 'Create' }} Menu Item</h2>
+          <button class="btn-close" (click)="closeItemForm()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="itemTitle">Title *</label>
+            <input
+              id="itemTitle"
+              type="text"
+              class="form-control"
+              [value]="itemForm().title"
+              (input)="updateItemFormField('title', $any($event.target).value)"
+              placeholder="e.g., Dashboard">
+          </div>
+
+          <div class="form-group">
+            <label for="itemDescription">Description</label>
+            <input
+              id="itemDescription"
+              type="text"
+              class="form-control"
+              [value]="itemForm().description || ''"
+              (input)="updateItemFormField('description', $any($event.target).value)"
+              placeholder="Optional description">
+          </div>
+
+          <div class="form-group">
+            <label for="itemRoute">Route *</label>
+            <input
+              id="itemRoute"
+              type="text"
+              class="form-control"
+              [value]="itemForm().route"
+              (input)="updateItemFormField('route', $any($event.target).value)"
+              placeholder="e.g., /dashboard">
+          </div>
+
+          <div class="form-group">
+            <label for="itemIcon">Icon (emoji)</label>
+            <input
+              id="itemIcon"
+              type="text"
+              class="form-control"
+              [value]="itemForm().icon || ''"
+              (input)="updateItemFormField('icon', $any($event.target).value)"
+              placeholder="e.g., 📊">
+          </div>
+
+          <div class="form-group">
+            <label for="itemLocation">Location *</label>
+            <select
+              id="itemLocation"
+              class="form-control"
+              [value]="itemForm().location"
+              (change)="updateItemFormField('location', $any($event.target).value as MenuLocation)">
+              <option [value]="MenuLocation.SIDEBAR">Sidebar Only</option>
+              <option [value]="MenuLocation.HEADER">Header Only</option>
+              <option [value]="MenuLocation.BOTH">Both Sidebar & Header</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="itemGroup">Group *</label>
+            <select
+              id="itemGroup"
+              class="form-control"
+              [value]="itemForm().menuGroupId"
+              (change)="updateItemFormField('menuGroupId', +$any($event.target).value)">
+              <option [value]="0">Select a group</option>
+              @for (group of menuGroups(); track group.id) {
+                <option [value]="group.id">{{ group.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="itemOrder">Order</label>
+            <input
+              id="itemOrder"
+              type="number"
+              class="form-control"
+              [value]="itemForm().order"
+              (input)="updateItemFormField('order', +$any($event.target).value)">
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [checked]="itemForm().isActive"
+                (change)="updateItemFormField('isActive', $any($event.target).checked)">
+              Active
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeItemForm()">Cancel</button>
+          <button class="btn btn-primary" (click)="saveItem()">Save</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
