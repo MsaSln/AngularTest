@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { MenuService } from '../../services/menu.service';
 import { Auth, User } from '../../services/auth';
+import { ThemeService } from '../../services/theme.service';
 import { MenuItem } from '../../models/menu.model';
 
 @Component({
@@ -20,7 +21,8 @@ export class Header implements OnInit {
   constructor(
     private menuService: MenuService,
     private authService: Auth,
-    private router: Router
+    private router: Router,
+    public themeService: ThemeService
   ) {}
 
   ngOnInit(): void {

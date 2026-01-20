@@ -1,7 +1,8 @@
 .app-container {
   display: flex;
   min-height: 100vh;
-  background: #ecf0f1;
+  background: var(--bg-tertiary);
+  transition: background-color 0.3s ease;
 }
 
 .main-wrapper {
@@ -17,6 +18,7 @@
   margin-top: 60px;
   padding: 2rem;
   overflow-y: auto;
+  background: var(--bg-tertiary);
 }
 
 /* When sidebar is collapsed */
