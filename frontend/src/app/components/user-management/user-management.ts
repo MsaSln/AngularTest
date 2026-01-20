@@ -28,6 +28,7 @@ export class UserManagement implements OnInit {
   editingUser = signal<User | null>(null);
   generatedPassword = signal<string>('');
   showPasswordModal = signal<boolean>(false);
+  activeTab = signal<'info' | 'roles'>('info');
 
   // Form data
   userForm = signal<UserFormData>({
@@ -72,6 +73,7 @@ export class UserManagement implements OnInit {
       this.editingUser.set(null);
       this.resetUserForm();
     }
+    this.activeTab.set('info');
     this.showUserForm.set(true);
   }
 
@@ -79,6 +81,11 @@ export class UserManagement implements OnInit {
     this.showUserForm.set(false);
     this.editingUser.set(null);
     this.resetUserForm();
+    this.activeTab.set('info');
+  }
+
+  setActiveTab(tab: 'info' | 'roles'): void {
+    this.activeTab.set(tab);
   }
 
   saveUser(): void {
