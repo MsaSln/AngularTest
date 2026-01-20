@@ -23,6 +23,13 @@ INSERT INTO permissions (name, description, resource, action) VALUES
 ('users.update', 'Update users', 'users', 'update'),
 ('users.delete', 'Delete users', 'users', 'delete');
 
+-- Role Management Permissions
+INSERT INTO permissions (name, description, resource, action) VALUES
+('roles.view', 'View roles', 'roles', 'view'),
+('roles.create', 'Create roles', 'roles', 'create'),
+('roles.update', 'Update roles', 'roles', 'update'),
+('roles.delete', 'Delete roles', 'roles', 'delete');
+
 -- Dashboard Permissions
 INSERT INTO permissions (name, description, resource, action) VALUES
 ('dashboard.view', 'View dashboard', 'dashboard', 'view'),

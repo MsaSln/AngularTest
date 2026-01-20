@@ -1,0 +1,196 @@
+<div class="user-management">
+  <div class="management-header">
+    <h1>User Management</h1>
+    <button
+      class="btn btn-primary"
+      (click)="openUserForm()"
+      *hasPermission="'users.create'">
+      ➕ Add User
+    </button>
+  </div>
+
+  <div class="users-table-container">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Roles</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users()" [class.inactive]="!user.isActive">
+          <td>
+            <div class="user-info">
+              <strong>{{ user.username }}</strong>
+            </div>
+          </td>
+          <td>{{ user.email }}</td>
+          <td>
+            <div class="roles-list">
+              <span
+                *ngFor="let role of user.roles"
+                class="role-badge">
+                {{ role.name }}
+              </span>
+            </div>
+          </td>
+          <td>
+            <span class="status-badge" [class.active]="user.isActive">
+              {{ user.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>{{ user.createdAt | date: 'short' }}</td>
+          <td>
+            <div class="action-buttons">
+              <button
+                class="btn-icon"
+                (click)="openUserForm(user)"
+                *hasPermission="'users.update'"
+                title="Edit">
+                ✏️
+              </button>
+              <button
+                class="btn-icon"
+                (click)="resetPassword(user)"
+                *hasPermission="'users.update'"
+                title="Reset Password">
+                🔑
+              </button>
+              <button
+                class="btn-icon"
+                (click)="toggleActive(user)"
+                *hasPermission="'users.update'"
+                [title]="user.isActive ? 'Deactivate' : 'Activate'">
+                {{ user.isActive ? '🔒' : '🔓' }}
+              </button>
+              <button
+                class="btn-icon btn-danger"
+                (click)="deleteUser(user)"
+                *hasPermission="'users.delete'"
+                title="Delete">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="users().length === 0">
+          <td colspan="6" class="empty-message">
+            No users found
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- User Form Modal -->
+  <div class="modal-overlay" *ngIf="showUserForm()">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>{{ editingUser() ? 'Edit User' : 'Add New User' }}</h2>
+        <button class="btn-close" (click)="closeUserForm()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Username *</label>
+          <input
+            type="text"
+            class="form-control"
+            [value]="userForm().username"
+            (input)="updateFormField('username', $any($event.target).value)"
+            placeholder="Enter username"
+            [disabled]="!!editingUser()"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Email *</label>
+          <input
+            type="email"
+            class="form-control"
+            [value]="userForm().email"
+            (input)="updateFormField('email', $any($event.target).value)"
+            placeholder="Enter email"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Roles *</label>
+          <div class="roles-selection">
+            <div
+              *ngFor="let role of availableRoles()"
+              class="role-checkbox">
+              <label>
+                <input
+                  type="checkbox"
+                  [checked]="isRoleSelected(role.id)"
+                  (change)="toggleRole(role.id)"
+                />
+                <span>{{ role.name }}</span>
+                <small *ngIf="role.description">{{ role.description }}</small>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="editingUser()">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              [checked]="userForm().isActive"
+              (change)="updateFormField('isActive', $any($event.target).checked)"
+            />
+            <span>Active</span>
+          </label>
+        </div>
+
+        <div class="info-box" *ngIf="!editingUser()">
+          ℹ️ A password will be automatically generated and shown after user creation.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeUserForm()">
+          Cancel
+        </button>
+        <button class="btn btn-primary" (click)="saveUser()">
+          {{ editingUser() ? 'Update' : 'Create' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Display Modal -->
+  <div class="modal-overlay" *ngIf="showPasswordModal()">
+    <div class="modal modal-password">
+      <div class="modal-header">
+        <h2>Generated Password</h2>
+        <button class="btn-close" (click)="closePasswordModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="password-display">
+          <p class="warning">
+            ⚠️ <strong>Important:</strong> Save this password now. It will not be shown again.
+          </p>
+          <div class="password-box">
+            <code>{{ generatedPassword() }}</code>
+            <button class="btn btn-secondary btn-copy" (click)="copyPassword()">
+              📋 Copy
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" (click)="closePasswordModal()">
+          I have saved the password
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

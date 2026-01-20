@@ -1,0 +1,153 @@
+<div class="role-management">
+  <div class="management-header">
+    <h1>Role Management</h1>
+    <button
+      class="btn btn-primary"
+      (click)="openRoleForm()"
+      *hasPermission="'roles.create'">
+      ➕ Add Role
+    </button>
+  </div>
+
+  <div class="roles-grid">
+    <div *ngFor="let role of roles()" class="role-card">
+      <div class="role-header">
+        <div class="role-info">
+          <h3>{{ role.name }}</h3>
+          <p *ngIf="role.description">{{ role.description }}</p>
+          <div class="role-meta">
+            <span class="permission-count">
+              {{ getPermissionCount(role) }} permissions
+            </span>
+            <span class="status-badge" [class.active]="role.isActive">
+              {{ role.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="role-permissions" *ngIf="role.permissions.length > 0">
+        <h4>Permissions:</h4>
+        <div class="permissions-list">
+          <span
+            *ngFor="let permission of role.permissions"
+            class="permission-badge"
+            [title]="permission.description">
+            {{ permission.name }}
+          </span>
+        </div>
+      </div>
+
+      <div class="role-actions">
+        <button
+          class="btn btn-secondary btn-sm"
+          (click)="openRoleForm(role)"
+          *hasPermission="'roles.update'">
+          ✏️ Edit
+        </button>
+        <button
+          class="btn btn-danger btn-sm"
+          (click)="deleteRole(role)"
+          *hasPermission="'roles.delete'">
+          🗑️ Delete
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="roles().length === 0" class="empty-message">
+      No roles found. Click "Add Role" to create one.
+    </div>
+  </div>
+
+  <!-- Role Form Modal -->
+  <div class="modal-overlay" *ngIf="showRoleForm()">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <h2>{{ editingRole() ? 'Edit Role' : 'Add New Role' }}</h2>
+        <button class="btn-close" (click)="closeRoleForm()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Role Name *</label>
+          <input
+            type="text"
+            class="form-control"
+            [value]="roleForm().name"
+            (input)="updateFormField('name', $any($event.target).value)"
+            placeholder="Enter role name (e.g., Administrator, Manager)"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea
+            class="form-control"
+            rows="2"
+            [value]="roleForm().description"
+            (input)="updateFormField('description', $any($event.target).value)"
+            placeholder="Enter role description"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              [checked]="roleForm().isActive"
+              (change)="updateFormField('isActive', $any($event.target).checked)"
+            />
+            <span>Active</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>Permissions</label>
+          <div class="permissions-container">
+            <div *ngFor="let resource of getResourceGroups()" class="permission-group">
+              <div class="permission-group-header">
+                <h4>{{ resource }}</h4>
+                <button
+                  type="button"
+                  class="btn-link"
+                  (click)="selectAllInResource(resource)">
+                  {{ isAllSelectedInResource(resource) ? 'Deselect All' : 'Select All' }}
+                </button>
+              </div>
+
+              <div class="permission-checkboxes">
+                <div
+                  *ngFor="let permission of groupedPermissions().get(resource)"
+                  class="permission-checkbox">
+                  <label>
+                    <input
+                      type="checkbox"
+                      [checked]="isPermissionSelected(permission.id)"
+                      (change)="togglePermission(permission.id)"
+                    />
+                    <div class="permission-info">
+                      <span class="permission-name">{{ permission.name }}</span>
+                      <small class="permission-desc">{{ permission.description }}</small>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="getResourceGroups().length === 0" class="empty-permissions">
+              No permissions available. Please create permissions first.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeRoleForm()">
+          Cancel
+        </button>
+        <button class="btn btn-primary" (click)="saveRole()">
+          {{ editingRole() ? 'Update' : 'Create' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
