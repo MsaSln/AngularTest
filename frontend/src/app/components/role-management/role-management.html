@@ -26,18 +26,6 @@
         </div>
       </div>
 
-      <div class="role-permissions" *ngIf="role.permissions.length > 0">
-        <h4>Permissions:</h4>
-        <div class="permissions-list">
-          <span
-            *ngFor="let permission of role.permissions"
-            class="permission-badge"
-            [title]="permission.description">
-            {{ permission.name }}
-          </span>
-        </div>
-      </div>
-
       <div class="role-actions">
         <button
           class="btn btn-secondary btn-sm"

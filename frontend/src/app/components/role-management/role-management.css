@@ -89,36 +89,6 @@
   background: var(--accent-success);
 }
 
-/* Role Permissions */
-.role-permissions {
-  border-top: 1px solid var(--border-color);
-  padding-top: 1rem;
-}
-
-.role-permissions h4 {
-  margin: 0 0 0.75rem 0;
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.permissions-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.permission-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
 /* Role Actions */
 .role-actions {
   display: flex;
