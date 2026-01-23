@@ -1,0 +1,211 @@
+<div class="vehicle-management">
+  <div class="management-header">
+    <h1>Araç Yönetimi</h1>
+    <button
+      class="btn btn-primary"
+      (click)="openVehicleForm()"
+      *hasPermission="'vehicles.create'">
+      ➕ Araç Ekle
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filter-group">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Plaka veya araç numarasıyla ara..."
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()"
+      />
+      <button class="btn btn-secondary" (click)="onSearch()">🔍 Ara</button>
+    </div>
+
+    <div class="filter-group">
+      <label>Durum:</label>
+      <select class="form-control" [(ngModel)]="activeFilter" (change)="onFilterChange()">
+        <option [ngValue]="undefined">Tümü</option>
+        <option [ngValue]="true">Aktif</option>
+        <option [ngValue]="false">Deaktif</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Vehicles Table -->
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Plaka</th>
+          <th>Araç Numarası</th>
+          <th>Marka</th>
+          <th>Model</th>
+          <th>Telefon/Telsiz</th>
+          <th>Durum</th>
+          <th>Oluşturulma</th>
+          <th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let vehicle of vehicles()" [class.inactive]="!vehicle.isActive">
+          <td>
+            <strong>{{ vehicle.plate }}</strong>
+          </td>
+          <td>{{ vehicle.vehicleNumber }}</td>
+          <td>{{ vehicle.brand || '-' }}</td>
+          <td>{{ vehicle.model || '-' }}</td>
+          <td>{{ vehicle.phoneTelsiz || '-' }}</td>
+          <td>
+            <span class="status-badge" [class.active]="vehicle.isActive">
+              {{ vehicle.isActive ? 'Aktif' : 'Deaktif' }}
+            </span>
+          </td>
+          <td>{{ formatDate(vehicle.createdAt) }}</td>
+          <td>
+            <div class="action-buttons">
+              <button
+                class="btn-icon"
+                (click)="openVehicleForm(vehicle)"
+                *hasPermission="'vehicles.update'"
+                title="Düzenle">
+                ✏️
+              </button>
+              <button
+                class="btn-icon btn-danger"
+                (click)="deleteVehicle(vehicle)"
+                *hasPermission="'vehicles.delete'"
+                [disabled]="!vehicle.isActive"
+                title="Deaktif Et">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="vehicles().length === 0">
+          <td colspan="8" class="no-data">
+            {{ loading() ? 'Yükleniyor...' : 'Araç bulunamadı' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages() > 1">
+    <button
+      class="btn btn-secondary"
+      (click)="goToPage(currentPage() - 1)"
+      [disabled]="currentPage() === 1">
+      ◀ Önceki
+    </button>
+    <span class="page-info">
+      Sayfa {{ currentPage() }} / {{ totalPages() }} (Toplam {{ totalItems() }} kayıt)
+    </span>
+    <button
+      class="btn btn-secondary"
+      (click)="goToPage(currentPage() + 1)"
+      [disabled]="currentPage() === totalPages()">
+      Sonraki ▶
+    </button>
+  </div>
+</div>
+
+<!-- Vehicle Form Modal -->
+<div class="modal-overlay" *ngIf="showVehicleForm()" (click)="closeVehicleForm()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ editingVehicle() ? 'Araç Düzenle' : 'Yeni Araç' }}</h2>
+      <button class="close-btn" (click)="closeVehicleForm()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Plate Fields -->
+      <div class="form-group">
+        <label>Plaka *</label>
+        <div class="plate-input-group">
+          <input
+            type="text"
+            class="form-control plate-input"
+            placeholder="İl (34)"
+            maxlength="3"
+            [(ngModel)]="vehicleForm().plateProvince"
+          />
+          <input
+            type="text"
+            class="form-control plate-input"
+            placeholder="Harf (ABC)"
+            maxlength="5"
+            [(ngModel)]="vehicleForm().plateLetters"
+            (input)="vehicleForm().plateLetters = $any($event.target).value.toUpperCase()"
+          />
+          <input
+            type="text"
+            class="form-control plate-input"
+            placeholder="Numara (1234)"
+            maxlength="5"
+            [(ngModel)]="vehicleForm().plateNumbers"
+          />
+        </div>
+        <small class="form-hint">Örnek: 34 ABC 1234</small>
+      </div>
+
+      <div class="form-group">
+        <label>Araç Numarası *</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="vehicleForm().vehicleNumber"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Marka</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="vehicleForm().brand"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Model</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="vehicleForm().model"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Telefon/Telsiz</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="vehicleForm().phoneTelsiz"
+        />
+      </div>
+
+      <div class="form-group" *ngIf="editingVehicle()">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            [(ngModel)]="vehicleForm().isActive"
+          />
+          Aktif
+        </label>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeVehicleForm()">
+        İptal
+      </button>
+      <button class="btn btn-primary" (click)="saveVehicle()">
+        {{ editingVehicle() ? 'Güncelle' : 'Kaydet' }}
+      </button>
+    </div>
+  </div>
+</div>

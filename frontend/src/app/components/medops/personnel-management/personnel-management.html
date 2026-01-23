@@ -1,0 +1,203 @@
+<div class="personnel-management">
+  <div class="management-header">
+    <h1>Personel Yönetimi</h1>
+    <button
+      class="btn btn-primary"
+      (click)="openPersonnelForm()"
+      *hasPermission="'personnel.create'">
+      ➕ Personel Ekle
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filter-group">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Sicil no, ad, soyad veya pozisyon ile ara..."
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()"
+      />
+      <button class="btn btn-secondary" (click)="onSearch()">🔍 Ara</button>
+    </div>
+
+    <div class="filter-group">
+      <label>Durum:</label>
+      <select class="form-control" [(ngModel)]="activeFilter" (change)="onFilterChange()">
+        <option [ngValue]="undefined">Tümü</option>
+        <option [ngValue]="true">Aktif</option>
+        <option [ngValue]="false">Deaktif</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Personnel Table -->
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Sicil No</th>
+          <th>Ad</th>
+          <th>Soyad</th>
+          <th>Telefon</th>
+          <th>E-posta</th>
+          <th>Pozisyon</th>
+          <th>Durum</th>
+          <th>Oluşturulma</th>
+          <th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let person of personnel()" [class.inactive]="!person.isActive">
+          <td>
+            <strong>{{ person.registrationNumber }}</strong>
+          </td>
+          <td>{{ person.firstName }}</td>
+          <td>{{ person.lastName }}</td>
+          <td>{{ person.phone || '-' }}</td>
+          <td>{{ person.email || '-' }}</td>
+          <td>{{ person.position || '-' }}</td>
+          <td>
+            <span class="status-badge" [class.active]="person.isActive">
+              {{ person.isActive ? 'Aktif' : 'Deaktif' }}
+            </span>
+          </td>
+          <td>{{ formatDate(person.createdAt) }}</td>
+          <td>
+            <div class="action-buttons">
+              <button
+                class="btn-icon"
+                (click)="openPersonnelForm(person)"
+                *hasPermission="'personnel.update'"
+                title="Düzenle">
+                ✏️
+              </button>
+              <button
+                class="btn-icon btn-danger"
+                (click)="deletePersonnel(person)"
+                *hasPermission="'personnel.delete'"
+                [disabled]="!person.isActive"
+                title="Deaktif Et">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="personnel().length === 0">
+          <td colspan="9" class="no-data">
+            {{ loading() ? 'Yükleniyor...' : 'Personel bulunamadı' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages() > 1">
+    <button
+      class="btn btn-secondary"
+      (click)="goToPage(currentPage() - 1)"
+      [disabled]="currentPage() === 1">
+      ◀ Önceki
+    </button>
+    <span class="page-info">
+      Sayfa {{ currentPage() }} / {{ totalPages() }} (Toplam {{ totalItems() }} kayıt)
+    </span>
+    <button
+      class="btn btn-secondary"
+      (click)="goToPage(currentPage() + 1)"
+      [disabled]="currentPage() === totalPages()">
+      Sonraki ▶
+    </button>
+  </div>
+</div>
+
+<!-- Personnel Form Modal -->
+<div class="modal-overlay" *ngIf="showPersonnelForm()" (click)="closePersonnelForm()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ editingPersonnel() ? 'Personel Düzenle' : 'Yeni Personel' }}</h2>
+      <button class="close-btn" (click)="closePersonnelForm()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Sicil Numarası *</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="personnelForm().registrationNumber"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Ad *</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="personnelForm().firstName"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Soyad *</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="personnelForm().lastName"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Telefon</label>
+          <input
+            type="tel"
+            class="form-control"
+            [(ngModel)]="personnelForm().phone"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>E-posta</label>
+          <input
+            type="email"
+            class="form-control"
+            [(ngModel)]="personnelForm().email"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Pozisyon</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="personnelForm().position"
+        />
+      </div>
+
+      <div class="form-group" *ngIf="editingPersonnel()">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            [(ngModel)]="personnelForm().isActive"
+          />
+          Aktif
+        </label>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closePersonnelForm()">
+        İptal
+      </button>
+      <button class="btn btn-primary" (click)="savePersonnel()">
+        {{ editingPersonnel() ? 'Güncelle' : 'Kaydet' }}
+      </button>
+    </div>
+  </div>
+</div>

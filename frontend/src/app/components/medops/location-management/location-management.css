@@ -1,0 +1,362 @@
+.vehicle-management {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.management-header h1 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+/* Filters Section */
+.filters-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex: 1;
+  min-width: 250px;
+}
+
+.filter-group label {
+  color: var(--text-primary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.filter-group .form-control {
+  flex: 1;
+}
+
+/* Table Styles */
+.table-container {
+  background: var(--bg-primary);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--shadow);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table thead {
+  background: var(--bg-secondary);
+}
+
+.data-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.data-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.data-table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.data-table tbody tr:hover {
+  background: var(--bg-secondary);
+}
+
+.data-table tbody tr.inactive {
+  opacity: 0.6;
+}
+
+.no-data {
+  text-align: center;
+  padding: 3rem !important;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--accent-danger);
+  color: white;
+}
+
+.status-badge.active {
+  background: var(--accent-success);
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.page-info {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  z-index: 1000;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100vh;
+  background: var(--bg-primary);
+  box-shadow: -4px 0 16px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight 0.3s ease;
+  overflow-y: auto;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.form-group .form-hint {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: border-color 0.2s, background-color 0.3s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Plate Input */
+.plate-input-group {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;
+  gap: 0.5rem;
+}
+
+.plate-input {
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Checkbox */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--accent-primary-dark);
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-tertiary);
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.btn-icon:hover {
+  background: var(--bg-secondary);
+}
+
+.btn-icon.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal {
+    width: 100%;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-section {
+    flex-direction: column;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .plate-input-group {
+    grid-template-columns: 1fr;
+  }
+}

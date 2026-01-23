@@ -1,0 +1,179 @@
+<div class="location-management">
+  <div class="management-header">
+    <h1>Lokasyon Yönetimi</h1>
+    <button
+      class="btn btn-primary"
+      (click)="openLocationForm()"
+      *hasPermission="'locations.create'">
+      ➕ Lokasyon Ekle
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filter-group">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Lokasyon adı, il veya ilçe ile ara..."
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()"
+      />
+      <button class="btn btn-secondary" (click)="onSearch()">🔍 Ara</button>
+    </div>
+
+    <div class="filter-group">
+      <label>Durum:</label>
+      <select class="form-control" [(ngModel)]="activeFilter" (change)="onFilterChange()">
+        <option [ngValue]="undefined">Tümü</option>
+        <option [ngValue]="true">Aktif</option>
+        <option [ngValue]="false">Deaktif</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Locations Table -->
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Lokasyon Adı</th>
+          <th>İl</th>
+          <th>İlçe</th>
+          <th>Adres</th>
+          <th>Durum</th>
+          <th>Oluşturulma</th>
+          <th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let location of locations()" [class.inactive]="!location.isActive">
+          <td>
+            <strong>{{ location.name }}</strong>
+          </td>
+          <td>{{ location.province }}</td>
+          <td>{{ location.district }}</td>
+          <td>{{ location.address || '-' }}</td>
+          <td>
+            <span class="status-badge" [class.active]="location.isActive">
+              {{ location.isActive ? 'Aktif' : 'Deaktif' }}
+            </span>
+          </td>
+          <td>{{ formatDate(location.createdAt) }}</td>
+          <td>
+            <div class="action-buttons">
+              <button
+                class="btn-icon"
+                (click)="openLocationForm(location)"
+                *hasPermission="'locations.update'"
+                title="Düzenle">
+                ✏️
+              </button>
+              <button
+                class="btn-icon btn-danger"
+                (click)="deleteLocation(location)"
+                *hasPermission="'locations.delete'"
+                [disabled]="!location.isActive"
+                title="Deaktif Et">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="locations().length === 0">
+          <td colspan="7" class="no-data">
+            {{ loading() ? 'Yükleniyor...' : 'Lokasyon bulunamadı' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages() > 1">
+    <button
+      class="btn btn-secondary"
+      (click)="goToPage(currentPage() - 1)"
+      [disabled]="currentPage() === 1">
+      ◀ Önceki
+    </button>
+    <span class="page-info">
+      Sayfa {{ currentPage() }} / {{ totalPages() }} (Toplam {{ totalItems() }} kayıt)
+    </span>
+    <button
+      class="btn btn-secondary"
+      (click)="goToPage(currentPage() + 1)"
+      [disabled]="currentPage() === totalPages()">
+      Sonraki ▶
+    </button>
+  </div>
+</div>
+
+<!-- Location Form Modal -->
+<div class="modal-overlay" *ngIf="showLocationForm()" (click)="closeLocationForm()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ editingLocation() ? 'Lokasyon Düzenle' : 'Yeni Lokasyon' }}</h2>
+      <button class="close-btn" (click)="closeLocationForm()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Lokasyon Adı *</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="locationForm().name"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>İl *</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="locationForm().province"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>İlçe *</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="locationForm().district"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Adres</label>
+        <textarea
+          class="form-control"
+          rows="3"
+          [(ngModel)]="locationForm().address"
+        ></textarea>
+      </div>
+
+      <div class="form-group" *ngIf="editingLocation()">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            [(ngModel)]="locationForm().isActive"
+          />
+          Aktif
+        </label>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeLocationForm()">
+        İptal
+      </button>
+      <button class="btn btn-primary" (click)="saveLocation()">
+        {{ editingLocation() ? 'Güncelle' : 'Kaydet' }}
+      </button>
+    </div>
+  </div>
+</div>
