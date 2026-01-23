@@ -5,11 +5,13 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { MenuModule } from './menu/menu.module';
 import { RbacModule } from './rbac/rbac.module';
+import { MedOpsModule } from './medops/medops.module';
 import { User } from './users/user.entity';
 import { MenuGroup } from './menu/entities/menu-group.entity';
 import { MenuItem } from './menu/entities/menu-item.entity';
 import { Role } from './rbac/entities/role.entity';
 import { Permission } from './rbac/entities/permission.entity';
+import { Location, Vehicle, Personnel, Team, TeamDetail, TeamType, TeamDetailType } from './medops/entities';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { Permission } from './rbac/entities/permission.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [User, MenuGroup, MenuItem, Role, Permission],
+        entities: [User, MenuGroup, MenuItem, Role, Permission, Location, Vehicle, Personnel, Team, TeamDetail, TeamType, TeamDetailType],
         synchronize: true, // Set to false in production
         options: {
           encrypt: false,
@@ -38,6 +40,7 @@ import { Permission } from './rbac/entities/permission.entity';
     AuthModule,
     MenuModule,
     RbacModule,
+    MedOpsModule,
   ],
 })
 export class AppModule {}
