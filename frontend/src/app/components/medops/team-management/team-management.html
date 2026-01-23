@@ -1,0 +1,274 @@
+<div class="team-management">
+  <div class="management-header">
+    <h1>Ekip Yönetimi</h1>
+    <button
+      class="btn btn-primary"
+      (click)="openTeamForm()"
+      *hasPermission="'teams.create'">
+      ➕ Ekip Ekle
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filter-group">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Ekip adı veya numarası ile ara..."
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()"
+      />
+      <button class="btn btn-secondary" (click)="onSearch()">🔍 Ara</button>
+    </div>
+
+    <div class="filter-group">
+      <label>Durum:</label>
+      <select class="form-control" [(ngModel)]="activeFilter" (change)="onFilterChange()">
+        <option [ngValue]="undefined">Tümü</option>
+        <option [ngValue]="true">Aktif</option>
+        <option [ngValue]="false">Deaktif</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Teams Table -->
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Ekip Numarası</th>
+          <th>Ekip Adı</th>
+          <th>Ekip Tipi</th>
+          <th>Detay Tipi</th>
+          <th>Detay Sayısı</th>
+          <th>Durum</th>
+          <th>Oluşturulma</th>
+          <th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let team of teams()" [class.inactive]="!team.isActive">
+          <td>
+            <strong>{{ team.teamNumber }}</strong>
+          </td>
+          <td>{{ team.name }}</td>
+          <td>{{ team.teamType?.name || '-' }}</td>
+          <td>{{ team.detailType?.name || '-' }}</td>
+          <td>{{ team.teamDetails?.length || 0 }}</td>
+          <td>
+            <span class="status-badge" [class.active]="team.isActive">
+              {{ team.isActive ? 'Aktif' : 'Deaktif' }}
+            </span>
+          </td>
+          <td>{{ formatDate(team.createdAt) }}</td>
+          <td>
+            <div class="action-buttons">
+              <button
+                class="btn-icon"
+                (click)="openTeamForm(team)"
+                *hasPermission="'teams.update'"
+                title="Düzenle">
+                ✏️
+              </button>
+              <button
+                class="btn-icon btn-danger"
+                (click)="deleteTeam(team)"
+                *hasPermission="'teams.delete'"
+                [disabled]="!team.isActive"
+                title="Deaktif Et">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="teams().length === 0">
+          <td colspan="8" class="no-data">
+            {{ loading() ? 'Yükleniyor...' : 'Ekip bulunamadı' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages() > 1">
+    <button
+      class="btn btn-secondary"
+      (click)="goToPage(currentPage() - 1)"
+      [disabled]="currentPage() === 1">
+      ◀ Önceki
+    </button>
+    <span class="page-info">
+      Sayfa {{ currentPage() }} / {{ totalPages() }} (Toplam {{ totalItems() }} kayıt)
+    </span>
+    <button
+      class="btn btn-secondary"
+      (click)="goToPage(currentPage() + 1)"
+      [disabled]="currentPage() === totalPages()">
+      Sonraki ▶
+    </button>
+  </div>
+</div>
+
+<!-- Team Form Modal -->
+<div class="modal-overlay" *ngIf="showTeamForm()" (click)="closeTeamForm()">
+  <div class="modal modal-wide" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ editingTeam() ? 'Ekip Düzenle' : 'Yeni Ekip' }}</h2>
+      <button class="close-btn" (click)="closeTeamForm()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- 2-Column Layout -->
+      <div class="team-form-grid">
+        <!-- Left Column: Basic Info -->
+        <div class="team-basic-info">
+          <h3>Temel Bilgiler</h3>
+
+          <div class="form-group">
+            <label>Ekip Adı *</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="teamForm().name"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Ekip Numarası *</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="teamForm().teamNumber"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Ekip Tipi *</label>
+            <select class="form-control" [(ngModel)]="teamForm().teamTypeId">
+              <option [ngValue]="undefined">Seçiniz...</option>
+              <option *ngFor="let type of teamTypes()" [ngValue]="type.id">
+                {{ type.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Detay Tipi *</label>
+            <select class="form-control" [(ngModel)]="teamForm().detailTypeId">
+              <option [ngValue]="undefined">Seçiniz...</option>
+              <option *ngFor="let type of teamDetailTypes()" [ngValue]="type.id">
+                {{ type.name }} - {{ type.description }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="editingTeam()">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [(ngModel)]="teamForm().isActive"
+              />
+              Aktif
+            </label>
+          </div>
+        </div>
+
+        <!-- Right Column: Team Details -->
+        <div class="team-details-column">
+          <div class="team-details-header">
+            <h3>Ekip Detayları</h3>
+            <button
+              class="btn btn-secondary btn-sm"
+              (click)="addTeamDetail()"
+              [disabled]="!teamForm().detailTypeId">
+              ➕ Detay Ekle
+            </button>
+          </div>
+
+          <div class="team-details-list" *ngIf="teamForm().teamDetails && teamForm().teamDetails!.length > 0">
+            <div
+              *ngFor="let detail of teamForm().teamDetails; let i = index"
+              class="team-detail-item">
+              <div class="detail-item-header">
+                <strong>Detay #{{ i + 1 }}</strong>
+                <button
+                  class="btn-icon btn-danger btn-sm"
+                  (click)="removeTeamDetail(i)"
+                  title="Sil">
+                  ✕
+                </button>
+              </div>
+
+              <div class="detail-item-body">
+                <!-- Location + Vehicle (LOC_VEH) -->
+                <div *ngIf="selectedDetailType()?.code === 'LOC_VEH'">
+                  <div class="form-group">
+                    <label>Lokasyon *</label>
+                    <select class="form-control form-control-sm" [(ngModel)]="detail.locationId">
+                      <option [ngValue]="undefined">Seçiniz...</option>
+                      <option *ngFor="let location of locations()" [ngValue]="location.id">
+                        {{ location.name }} ({{ location.province }})
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Araç *</label>
+                    <select class="form-control form-control-sm" [(ngModel)]="detail.vehicleId">
+                      <option [ngValue]="undefined">Seçiniz...</option>
+                      <option *ngFor="let vehicle of vehicles()" [ngValue]="vehicle.id">
+                        {{ vehicle.plate }} - {{ vehicle.vehicleNumber }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Vehicle Only (VEH) -->
+                <div *ngIf="selectedDetailType()?.code === 'VEH'">
+                  <div class="form-group">
+                    <label>Araç *</label>
+                    <select class="form-control form-control-sm" [(ngModel)]="detail.vehicleId">
+                      <option [ngValue]="undefined">Seçiniz...</option>
+                      <option *ngFor="let vehicle of vehicles()" [ngValue]="vehicle.id">
+                        {{ vehicle.plate }} - {{ vehicle.vehicleNumber }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Personnel Only (PER) -->
+                <div *ngIf="selectedDetailType()?.code === 'PER'">
+                  <div class="form-group">
+                    <label>Personel *</label>
+                    <select class="form-control form-control-sm" [(ngModel)]="detail.personnelId">
+                      <option [ngValue]="undefined">Seçiniz...</option>
+                      <option *ngFor="let person of personnel()" [ngValue]="person.id">
+                        {{ person.firstName }} {{ person.lastName }} ({{ person.registrationNumber }})
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="no-details" *ngIf="!teamForm().teamDetails || teamForm().teamDetails!.length === 0">
+            <p>Henüz ekip detayı eklenmemiş.</p>
+            <p *ngIf="!teamForm().detailTypeId" class="hint">Detay eklemek için önce detay tipi seçiniz.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeTeamForm()">
+        İptal
+      </button>
+      <button class="btn btn-primary" (click)="saveTeam()">
+        {{ editingTeam() ? 'Güncelle' : 'Kaydet' }}
+      </button>
+    </div>
+  </div>
+</div>

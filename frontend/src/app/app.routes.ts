@@ -6,6 +6,10 @@ import { Layout } from './components/layout/layout';
 import { MenuManagement } from './components/menu-management/menu-management';
 import { UserManagement } from './components/user-management/user-management';
 import { RoleManagement } from './components/role-management/role-management';
+import { VehicleManagement } from './components/medops/vehicle-management/vehicle-management';
+import { LocationManagement } from './components/medops/location-management/location-management';
+import { PersonnelManagement } from './components/medops/personnel-management/personnel-management';
+import { TeamManagement } from './components/medops/team-management/team-management';
 import { authGuard } from './guards/auth-guard';
 import { permissionGuard } from './guards/permission.guard';
 
@@ -41,6 +45,30 @@ export const routes: Routes = [
         component: RoleManagement,
         canActivate: [permissionGuard],
         data: { permissions: ['roles.view'], permissionsOp: 'OR' }
+      },
+      {
+        path: 'vehicles',
+        component: VehicleManagement,
+        canActivate: [permissionGuard],
+        data: { permissions: ['vehicles.view'], permissionsOp: 'OR' }
+      },
+      {
+        path: 'locations',
+        component: LocationManagement,
+        canActivate: [permissionGuard],
+        data: { permissions: ['locations.view'], permissionsOp: 'OR' }
+      },
+      {
+        path: 'personnel',
+        component: PersonnelManagement,
+        canActivate: [permissionGuard],
+        data: { permissions: ['personnel.view'], permissionsOp: 'OR' }
+      },
+      {
+        path: 'teams',
+        component: TeamManagement,
+        canActivate: [permissionGuard],
+        data: { permissions: ['teams.view'], permissionsOp: 'OR' }
       },
     ]
   },
