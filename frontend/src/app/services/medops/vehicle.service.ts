@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Vehicle, CreateVehicleDto, UpdateVehicleDto } from '../../models/medops';
-import { environment } from '../../../environments/environment';
 
 export interface PaginatedResponse<T> {
   data: T[];
@@ -16,7 +15,7 @@ export interface PaginatedResponse<T> {
   providedIn: 'root'
 })
 export class VehicleService {
-  private apiUrl = `${environment.apiUrl}/medops/vehicles`;
+  private apiUrl = 'http://localhost:3000/medops/vehicles';
 
   constructor(private http: HttpClient) {}
 

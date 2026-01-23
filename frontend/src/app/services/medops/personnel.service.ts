@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Personnel, CreatePersonnelDto, UpdatePersonnelDto } from '../../models/medops';
-import { environment } from '../../../environments/environment';
 import { PaginatedResponse } from './vehicle.service';
+
+export { PaginatedResponse };
 
 @Injectable({
   providedIn: 'root'
 })
 export class PersonnelService {
-  private apiUrl = `${environment.apiUrl}/medops/personnel`;
+  private apiUrl = 'http://localhost:3000/medops/personnel';
 
   constructor(private http: HttpClient) {}
 
