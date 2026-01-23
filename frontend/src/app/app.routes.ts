@@ -18,8 +18,18 @@ export const routes: Routes = [
     component: Layout,
     canActivate: [authGuard],
     children: [
-      { path: 'dashboard', component: Dashboard },
-      { path: 'menu-management', component: MenuManagement },
+      {
+        path: 'dashboard',
+        component: Dashboard,
+        canActivate: [permissionGuard],
+        data: { permissions: ['dashboard.view'], permissionsOp: 'OR' }
+      },
+      {
+        path: 'menu-management',
+        component: MenuManagement,
+        canActivate: [permissionGuard],
+        data: { permissions: ['menu.groups.view', 'menu.items.view'], permissionsOp: 'OR' }
+      },
       {
         path: 'user-management',
         component: UserManagement,

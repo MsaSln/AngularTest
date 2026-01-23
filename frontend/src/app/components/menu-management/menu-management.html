@@ -1,7 +1,10 @@
 <div class="menu-management">
   <div class="management-header">
     <h1>Menu Management</h1>
-    <button class="btn btn-primary" (click)="openGroupForm()">
+    <button
+      class="btn btn-primary"
+      (click)="openGroupForm()"
+      *hasPermission="'menu.groups.create'">
       ➕ Add Menu Group
     </button>
   </div>
@@ -40,10 +43,18 @@
               </div>
             </div>
             <div class="group-actions">
-              <button class="btn-icon" (click)="openGroupForm(group); $event.stopPropagation()" title="Edit">
+              <button
+                class="btn-icon"
+                (click)="openGroupForm(group); $event.stopPropagation()"
+                *hasPermission="'menu.groups.update'"
+                title="Edit">
                 ✏️
               </button>
-              <button class="btn-icon" (click)="deleteGroup(group); $event.stopPropagation()" title="Delete">
+              <button
+                class="btn-icon"
+                (click)="deleteGroup(group); $event.stopPropagation()"
+                *hasPermission="'menu.groups.delete'"
+                title="Delete">
                 🗑️
               </button>
             </div>
@@ -59,7 +70,10 @@
       @if (selectedGroup()) {
         <div class="items-header">
           <h2>{{ selectedGroup()!.name }} - Items</h2>
-          <button class="btn btn-secondary" (click)="openItemForm()">
+          <button
+            class="btn btn-secondary"
+            (click)="openItemForm()"
+            *hasPermission="'menu.items.create'">
             ➕ Add Item
           </button>
         </div>
@@ -87,10 +101,18 @@
                 </div>
               </div>
               <div class="item-actions">
-                <button class="btn-icon" (click)="openItemForm(item)" title="Edit">
+                <button
+                  class="btn-icon"
+                  (click)="openItemForm(item)"
+                  *hasPermission="'menu.items.update'"
+                  title="Edit">
                   ✏️
                 </button>
-                <button class="btn-icon" (click)="deleteItem(item)" title="Delete">
+                <button
+                  class="btn-icon"
+                  (click)="deleteItem(item)"
+                  *hasPermission="'menu.items.delete'"
+                  title="Delete">
                   🗑️
                 </button>
               </div>
