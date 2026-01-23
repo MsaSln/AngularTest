@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Personnel, CreatePersonnelDto, UpdatePersonnelDto } from '../../models/medops';
 import { PaginatedResponse } from './vehicle.service';
 
-export { PaginatedResponse };
+export type { PaginatedResponse };
 
 @Injectable({
   providedIn: 'root'
