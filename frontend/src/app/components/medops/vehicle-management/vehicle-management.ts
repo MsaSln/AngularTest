@@ -29,6 +29,10 @@ export class VehicleManagement implements OnInit {
   editingVehicle = signal<Vehicle | null>(null);
   loading = signal<boolean>(false);
 
+  // Vehicle view modal
+  showVehicleView = signal<boolean>(false);
+  viewingVehicle = signal<Vehicle | null>(null);
+
   // Pagination
   currentPage = signal<number>(1);
   totalPages = signal<number>(1);
@@ -216,61 +220,13 @@ export class VehicleManagement implements OnInit {
   }
 
   viewVehicle(vehicle: Vehicle): void {
-    // Pencere boyutları
-    const width = 1000;
-    const height = 800;
+    this.viewingVehicle.set(vehicle);
+    this.showVehicleView.set(true);
+  }
 
-    // Multi-monitor kurulumunda birincil monitörde açmak için:
-    // 1. screen.availLeft ve screen.availTop birincil monitörün başlangıç noktasını verir
-    // 2. Ama güvenli olmak için, her zaman 0,0 koordinatını kullanıyoruz
-    //    (çünkü birincil monitör her zaman koordinat sisteminin (0,0) noktasındadır)
-
-    // NOT: Chrome ve modern tarayıcılarda, left=0 ve top=0 her zaman
-    // birincil monitörün sol üst köşesini gösterir, kullanıcı hangi
-    // monitörde olursa olsun.
-
-    // Birincil monitör koordinatları
-    const primaryMonitorLeft = 0;
-    const primaryMonitorTop = 0;
-
-    // Pencere pozisyonu (birincil monitör sol üst + offset)
-    const left = primaryMonitorLeft + 100;
-    const top = primaryMonitorTop + 80;
-
-    // Popup penceresi özellikleri
-    // screenX ve screenY parametreleri de ekleyerek daha garantili hale getiriyoruz
-    const features = [
-      `width=${width}`,
-      `height=${height}`,
-      `left=${left}`,
-      `top=${top}`,
-      `screenX=${left}`,
-      `screenY=${top}`,
-      'resizable=yes',
-      'scrollbars=yes',
-      'status=yes',
-      'menubar=no',
-      'toolbar=no',
-      'location=no'
-    ].join(',');
-
-    // Yeni pencerede aç
-    const url = `/vehicles/${vehicle.id}/view`;
-    const popup = window.open(url, '_blank', features);
-
-    // Ek güvence: Pencere açıldıktan sonra pozisyonu tekrar ayarla
-    // (Bazı tarayıcılarda popup blocker olabilir, bu yüzden kontrol ediyoruz)
-    if (popup) {
-      // Küçük bir gecikme ile pozisyonu garanti altına al
-      setTimeout(() => {
-        try {
-          popup.moveTo(left, top);
-        } catch (e) {
-          // Popup blocker veya izin hatası - sessizce devam et
-          console.log('Pencere pozisyonu ayarlanamadı:', e);
-        }
-      }, 100);
-    }
+  closeVehicleView(): void {
+    this.showVehicleView.set(false);
+    this.viewingVehicle.set(null);
   }
 
   deleteVehicle(vehicle: Vehicle): void {

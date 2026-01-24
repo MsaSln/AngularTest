@@ -216,3 +216,94 @@
     </div>
   </div>
 </div>
+
+<!-- Vehicle View Modal -->
+<div class="modal-overlay" *ngIf="showVehicleView()" (click)="closeVehicleView()">
+  <div class="modal modal-view" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Araç Bilgileri</h2>
+      <button class="close-btn" (click)="closeVehicleView()">✕</button>
+    </div>
+
+    <div class="modal-body" *ngIf="viewingVehicle()">
+      <!-- Plaka Bilgisi -->
+      <div class="info-section">
+        <h3>Plaka Bilgisi</h3>
+        <div class="info-grid">
+          <div class="info-item full-width">
+            <label>Tam Plaka</label>
+            <div class="info-value plate-display">{{ viewingVehicle()!.plate }}</div>
+          </div>
+          <div class="info-item">
+            <label>İl Kodu</label>
+            <div class="info-value">{{ viewingVehicle()!.plateProvince }}</div>
+          </div>
+          <div class="info-item">
+            <label>Harfler</label>
+            <div class="info-value">{{ viewingVehicle()!.plateLetters }}</div>
+          </div>
+          <div class="info-item">
+            <label>Numaralar</label>
+            <div class="info-value">{{ viewingVehicle()!.plateNumbers }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Araç Bilgileri -->
+      <div class="info-section">
+        <h3>Araç Bilgileri</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Araç Numarası</label>
+            <div class="info-value">{{ viewingVehicle()!.vehicleNumber }}</div>
+          </div>
+          <div class="info-item">
+            <label>Marka</label>
+            <div class="info-value">{{ viewingVehicle()!.brand || '-' }}</div>
+          </div>
+          <div class="info-item">
+            <label>Model</label>
+            <div class="info-value">{{ viewingVehicle()!.model || '-' }}</div>
+          </div>
+          <div class="info-item">
+            <label>Telefon/Telsiz</label>
+            <div class="info-value">{{ viewingVehicle()!.phoneTelsiz || '-' }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Durum Bilgisi -->
+      <div class="info-section">
+        <h3>Durum Bilgisi</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Durum</label>
+            <div class="info-value">
+              <span class="status-badge" [class.active]="viewingVehicle()!.isActive">
+                {{ viewingVehicle()!.isActive ? 'Aktif' : 'Deaktif' }}
+              </span>
+            </div>
+          </div>
+          <div class="info-item">
+            <label>Oluşturulma Tarihi</label>
+            <div class="info-value">{{ formatDate(viewingVehicle()!.createdAt) }}</div>
+          </div>
+          <div class="info-item" *ngIf="viewingVehicle()!.creator">
+            <label>Oluşturan</label>
+            <div class="info-value">{{ viewingVehicle()!.creator?.username }}</div>
+          </div>
+          <div class="info-item" *ngIf="viewingVehicle()!.updatedAt">
+            <label>Son Güncelleme</label>
+            <div class="info-value">{{ formatDate(viewingVehicle()!.updatedAt) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeVehicleView()">
+        Kapat
+      </button>
+    </div>
+  </div>
+</div>

@@ -7,7 +7,6 @@ import { MenuManagement } from './components/menu-management/menu-management';
 import { UserManagement } from './components/user-management/user-management';
 import { RoleManagement } from './components/role-management/role-management';
 import { VehicleManagement } from './components/medops/vehicle-management/vehicle-management';
-import { VehicleView } from './components/medops/vehicle-view/vehicle-view';
 import { LocationManagement } from './components/medops/location-management/location-management';
 import { PersonnelManagement } from './components/medops/personnel-management/personnel-management';
 import { TeamManagement } from './components/medops/team-management/team-management';
@@ -18,11 +17,6 @@ export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
-  {
-    path: 'vehicles/:id/view',
-    component: VehicleView,
-    canActivate: [authGuard]
-  },
   {
     path: '',
     component: Layout,

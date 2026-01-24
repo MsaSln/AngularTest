@@ -343,9 +343,88 @@
   background: rgba(239, 68, 68, 0.1);
 }
 
+/* Vehicle View Modal Styles */
+.modal-view {
+  width: 70%;
+  max-width: 1200px;
+}
+
+.modal-view .modal-body {
+  padding: 2rem;
+}
+
+.info-section {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.info-section h3 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.125rem;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--accent-primary);
+  padding-bottom: 0.5rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.info-item label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  padding: 0.75rem 1rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  color: var(--text-primary);
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+}
+
+.plate-display {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: monospace;
+  letter-spacing: 0.1rem;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-primary-dark) 100%);
+  color: white;
+  text-align: center;
+  justify-content: center;
+  padding: 1.5rem;
+  border: 3px solid var(--accent-primary-dark);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .modal {
+    width: 100%;
+  }
+
+  .modal-view {
     width: 100%;
   }
 
@@ -363,5 +442,13 @@
 
   .plate-input-group {
     grid-template-columns: 1fr;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plate-display {
+    font-size: 1.5rem;
   }
 }
