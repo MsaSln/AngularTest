@@ -69,7 +69,7 @@
         </div>
         <div class="info-item" *ngIf="vehicle()!.creator">
           <label>Oluşturan</label>
-          <div class="info-value">{{ vehicle()!.creator.username }}</div>
+          <div class="info-value">{{ vehicle()!.creator?.username }}</div>
         </div>
         <div class="info-item" *ngIf="vehicle()!.updatedAt">
           <label>Son Güncelleme</label>
