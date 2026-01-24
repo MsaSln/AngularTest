@@ -21,6 +21,7 @@ import {
   PersonnelController,
   TeamController,
 } from './controllers';
+import { TeamTypesController } from './controllers/team-types.controller';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import {
     LocationController,
     PersonnelController,
     TeamController,
+    TeamTypesController,
   ],
   providers: [
     VehicleService,

@@ -96,34 +96,25 @@ export class TeamManagement implements OnInit {
 
   loadReferenceData(): void {
     // Load team types, detail types, and all entities for team details
-    // Assuming we have endpoints or we can load all active items
-    // For simplicity, loading without pagination with high limit
     forkJoin({
+      teamTypes: this.teamService.getTeamTypes(),
+      teamDetailTypes: this.teamService.getTeamDetailTypes(),
       vehicles: this.vehicleService.getAll(undefined, true, 'plate', 'ASC', 1, 1000),
       locations: this.locationService.getAll(undefined, true, 'name', 'ASC', 1, 1000),
       personnel: this.personnelService.getAll(undefined, true, 'firstName', 'ASC', 1, 1000)
     }).subscribe({
       next: (data) => {
+        this.teamTypes.set(data.teamTypes);
+        this.teamDetailTypes.set(data.teamDetailTypes);
         this.vehicles.set(data.vehicles.data);
         this.locations.set(data.locations.data);
         this.personnel.set(data.personnel.data);
       },
       error: (error) => {
         console.error('Error loading reference data:', error);
+        alert('Referans verileri yüklenirken hata oluştu. Lütfen sayfayı yenileyin.');
       }
     });
-
-    // Mock team types and detail types - these should come from an API
-    this.teamTypes.set([
-      { id: 1, name: 'Ambulans', code: 'AMB', displayOrder: 1, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-      { id: 2, name: 'Evde Bakım', code: 'EVD', displayOrder: 2, isActive: true, createdAt: new Date(), updatedAt: new Date() }
-    ]);
-
-    this.teamDetailTypes.set([
-      { id: 1, name: 'Lokasyon + Araç', code: 'LOC_VEH', description: 'Lokasyon ve Araç', displayOrder: 1, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-      { id: 2, name: 'Araç', code: 'VEH', description: 'Sadece Araç', displayOrder: 2, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-      { id: 3, name: 'Personel', code: 'PER', description: 'Sadece Personel', displayOrder: 3, isActive: true, createdAt: new Date(), updatedAt: new Date() }
-    ]);
   }
 
   loadTeams(): void {

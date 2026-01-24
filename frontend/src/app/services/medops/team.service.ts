@@ -11,6 +11,7 @@ export type { PaginatedResponse };
 })
 export class TeamService {
   private apiUrl = 'http://localhost:3000/medops/teams';
+  private teamTypesUrl = 'http://localhost:3000/medops/team-types';
 
   constructor(private http: HttpClient) {}
 
@@ -63,5 +64,13 @@ export class TeamService {
 
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getTeamTypes(): Observable<TeamType[]> {
+    return this.http.get<TeamType[]>(this.teamTypesUrl);
+  }
+
+  getTeamDetailTypes(): Observable<TeamDetailType[]> {
+    return this.http.get<TeamDetailType[]>(`${this.teamTypesUrl}/detail-types`);
   }
 }
