@@ -13,22 +13,18 @@ import {
 import { TeamService } from '../services/team.service';
 import { CreateTeamDto, UpdateTeamDto } from '../dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { PermissionsGuard } from '../../auth/permissions.guard';
-import { RequirePermissions } from '../../auth/permissions.decorator';
 
 @Controller('medops/teams')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
+@UseGuards(JwtAuthGuard)
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
 
   @Post()
-  @RequirePermissions('teams.create')
   create(@Body() createTeamDto: CreateTeamDto, @Request() req) {
     return this.teamService.create(createTeamDto, req.user.userId);
   }
 
   @Get()
-  @RequirePermissions('teams.view')
   findAll(
     @Query('search') search?: string,
     @Query('isActive') isActive?: string,
@@ -52,13 +48,11 @@ export class TeamController {
   }
 
   @Get(':id')
-  @RequirePermissions('teams.view')
   findOne(@Param('id') id: string) {
     return this.teamService.findOne(+id);
   }
 
   @Patch(':id')
-  @RequirePermissions('teams.update')
   update(
     @Param('id') id: string,
     @Body() updateTeamDto: UpdateTeamDto,
@@ -68,7 +62,6 @@ export class TeamController {
   }
 
   @Delete(':id')
-  @RequirePermissions('teams.delete')
   remove(@Param('id') id: string, @Request() req) {
     return this.teamService.remove(+id, req.user.userId);
   }

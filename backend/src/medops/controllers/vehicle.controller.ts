@@ -13,22 +13,18 @@ import {
 import { VehicleService } from '../services/vehicle.service';
 import { CreateVehicleDto, UpdateVehicleDto } from '../dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { PermissionsGuard } from '../../auth/permissions.guard';
-import { RequirePermissions } from '../../auth/permissions.decorator';
 
 @Controller('medops/vehicles')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
+@UseGuards(JwtAuthGuard)
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
   @Post()
-  @RequirePermissions('vehicles.create')
   create(@Body() createVehicleDto: CreateVehicleDto, @Request() req) {
     return this.vehicleService.create(createVehicleDto, req.user.userId);
   }
 
   @Get()
-  @RequirePermissions('vehicles.view')
   findAll(
     @Query('search') search?: string,
     @Query('isActive') isActive?: string,
@@ -48,13 +44,11 @@ export class VehicleController {
   }
 
   @Get(':id')
-  @RequirePermissions('vehicles.view')
   findOne(@Param('id') id: string) {
     return this.vehicleService.findOne(+id);
   }
 
   @Patch(':id')
-  @RequirePermissions('vehicles.update')
   update(
     @Param('id') id: string,
     @Body() updateVehicleDto: UpdateVehicleDto,
@@ -64,7 +58,6 @@ export class VehicleController {
   }
 
   @Delete(':id')
-  @RequirePermissions('vehicles.delete')
   remove(@Param('id') id: string, @Request() req) {
     return this.vehicleService.remove(+id, req.user.userId);
   }

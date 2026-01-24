@@ -13,22 +13,18 @@ import {
 import { LocationService } from '../services/location.service';
 import { CreateLocationDto, UpdateLocationDto } from '../dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { PermissionsGuard } from '../../auth/permissions.guard';
-import { RequirePermissions } from '../../auth/permissions.decorator';
 
 @Controller('medops/locations')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
+@UseGuards(JwtAuthGuard)
 export class LocationController {
   constructor(private readonly locationService: LocationService) {}
 
   @Post()
-  @RequirePermissions('locations.create')
   create(@Body() createLocationDto: CreateLocationDto, @Request() req) {
     return this.locationService.create(createLocationDto, req.user.userId);
   }
 
   @Get()
-  @RequirePermissions('locations.view')
   findAll(
     @Query('search') search?: string,
     @Query('isActive') isActive?: string,
@@ -48,13 +44,11 @@ export class LocationController {
   }
 
   @Get(':id')
-  @RequirePermissions('locations.view')
   findOne(@Param('id') id: string) {
     return this.locationService.findOne(+id);
   }
 
   @Patch(':id')
-  @RequirePermissions('locations.update')
   update(
     @Param('id') id: string,
     @Body() updateLocationDto: UpdateLocationDto,
@@ -64,7 +58,6 @@ export class LocationController {
   }
 
   @Delete(':id')
-  @RequirePermissions('locations.delete')
   remove(@Param('id') id: string, @Request() req) {
     return this.locationService.remove(+id, req.user.userId);
   }

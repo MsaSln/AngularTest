@@ -13,22 +13,18 @@ import {
 import { PersonnelService } from '../services/personnel.service';
 import { CreatePersonnelDto, UpdatePersonnelDto } from '../dto';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { PermissionsGuard } from '../../auth/permissions.guard';
-import { RequirePermissions } from '../../auth/permissions.decorator';
 
 @Controller('medops/personnel')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
+@UseGuards(JwtAuthGuard)
 export class PersonnelController {
   constructor(private readonly personnelService: PersonnelService) {}
 
   @Post()
-  @RequirePermissions('personnel.create')
   create(@Body() createPersonnelDto: CreatePersonnelDto, @Request() req) {
     return this.personnelService.create(createPersonnelDto, req.user.userId);
   }
 
   @Get()
-  @RequirePermissions('personnel.view')
   findAll(
     @Query('search') search?: string,
     @Query('isActive') isActive?: string,
@@ -48,13 +44,11 @@ export class PersonnelController {
   }
 
   @Get(':id')
-  @RequirePermissions('personnel.view')
   findOne(@Param('id') id: string) {
     return this.personnelService.findOne(+id);
   }
 
   @Patch(':id')
-  @RequirePermissions('personnel.update')
   update(
     @Param('id') id: string,
     @Body() updatePersonnelDto: UpdatePersonnelDto,
@@ -64,7 +58,6 @@ export class PersonnelController {
   }
 
   @Delete(':id')
-  @RequirePermissions('personnel.delete')
   remove(@Param('id') id: string, @Request() req) {
     return this.personnelService.remove(+id, req.user.userId);
   }
