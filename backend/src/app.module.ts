@@ -12,6 +12,7 @@ import { MenuItem } from './menu/entities/menu-item.entity';
 import { Role } from './rbac/entities/role.entity';
 import { Permission } from './rbac/entities/permission.entity';
 import { Location, Vehicle, Personnel, Team, TeamDetail, TeamType, TeamDetailType } from './medops/entities';
+import { WindowManagerController } from './common/controllers/window-manager.controller';
 
 @Module({
   imports: [
@@ -42,5 +43,6 @@ import { Location, Vehicle, Personnel, Team, TeamDetail, TeamType, TeamDetailTyp
     RbacModule,
     MedOpsModule,
   ],
+  controllers: [WindowManagerController],
 })
 export class AppModule {}

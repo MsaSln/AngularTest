@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { VehicleService, PaginatedResponse } from '../../../services/medops/vehicle.service';
+import { WindowManagerService } from '../../../services/window-manager.service';
 import { HasPermissionDirective } from '../../../directives/has-permission.directive';
 import { Vehicle, CreateVehicleDto, UpdateVehicleDto } from '../../../models/medops';
 
@@ -54,7 +55,10 @@ export class VehicleManagement implements OnInit {
     phoneTelsiz: ''
   });
 
-  constructor(private vehicleService: VehicleService) {}
+  constructor(
+    private vehicleService: VehicleService,
+    private windowManagerService: WindowManagerService
+  ) {}
 
   ngOnInit(): void {
     this.loadVehicles();
@@ -220,8 +224,25 @@ export class VehicleManagement implements OnInit {
   }
 
   viewVehicle(vehicle: Vehicle): void {
-    this.viewingVehicle.set(vehicle);
-    this.showVehicleView.set(true);
+    // Backend'den sistem komutu ile birincil monitörde Chrome/Firefox aç
+    const url = `${window.location.origin}/vehicles/${vehicle.id}/view`;
+
+    this.windowManagerService.openOnPrimaryMonitor(url, 1000, 800).subscribe({
+      next: (response) => {
+        if (!response.success) {
+          console.error('Pencere açılamadı:', response.message);
+          // Fallback: Modal kullan
+          this.viewingVehicle.set(vehicle);
+          this.showVehicleView.set(true);
+        }
+      },
+      error: (error) => {
+        console.error('Pencere açma hatası:', error);
+        // Fallback: Modal kullan
+        this.viewingVehicle.set(vehicle);
+        this.showVehicleView.set(true);
+      }
+    });
   }
 
   closeVehicleView(): void {
