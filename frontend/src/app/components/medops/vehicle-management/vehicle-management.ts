@@ -215,6 +215,24 @@ export class VehicleManagement implements OnInit {
     }
   }
 
+  viewVehicle(vehicle: Vehicle): void {
+    // Pencere boyutları
+    const width = 1000;
+    const height = 800;
+
+    // 1. monitörde açmak için pozitif koordinatlar kullanıyoruz
+    // Sol üst köşeye yakın ama tam değil (biraz margin)
+    const left = 100;
+    const top = 50;
+
+    // Popup penceresi özellikleri
+    const features = `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes,status=yes,menubar=no,toolbar=no,location=no`;
+
+    // Yeni pencerede aç
+    const url = `/vehicles/${vehicle.id}/view`;
+    window.open(url, '_blank', features);
+  }
+
   deleteVehicle(vehicle: Vehicle): void {
     if (!confirm(`"${vehicle.plate}" plakalı aracı deaktif etmek istediğinizden emin misiniz?`)) {
       return;

@@ -65,6 +65,13 @@
           <td>
             <div class="action-buttons">
               <button
+                class="btn-icon btn-view"
+                (click)="viewVehicle(vehicle)"
+                *hasPermission="'vehicles.view'"
+                title="Görüntüle">
+                👁️
+              </button>
+              <button
                 class="btn-icon"
                 (click)="openVehicleForm(vehicle)"
                 *hasPermission="'vehicles.update'"
