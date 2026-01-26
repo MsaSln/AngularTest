@@ -254,13 +254,14 @@ export class VehicleManagement implements OnInit {
 
     // Fallback: Standart yöntem - Ana ekranı tahmin et
     // Ana ekran genellikle koordinat 0,0'dadır
-    const currentScreen = window.screen;
-    const isOnPrimaryScreen = currentScreen.availLeft === 0 && currentScreen.availTop === 0;
+    const currentScreen: any = window.screen;
+    const isOnPrimaryScreen = (currentScreen.availLeft === 0 && currentScreen.availTop === 0) ||
+                             (!currentScreen.availLeft && !currentScreen.availTop);
 
     let left = 50;
     let top = 50;
 
-    if (!isOnPrimaryScreen) {
+    if (!isOnPrimaryScreen && currentScreen.availLeft !== undefined) {
       // Eğer şu an ana ekranda değilsek, koordinat 0,0'a (ana ekran) git
       left = -currentScreen.availLeft + 50;
       top = -currentScreen.availTop + 50;
