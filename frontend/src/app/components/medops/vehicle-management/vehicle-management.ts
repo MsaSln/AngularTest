@@ -223,26 +223,83 @@ export class VehicleManagement implements OnInit {
     }
   }
 
-  viewVehicle(vehicle: Vehicle): void {
-    // Backend'den sistem komutu ile birincil monitörde Chrome/Firefox aç
+  async viewVehicle(vehicle: Vehicle): Promise<void> {
     const url = `${window.location.origin}/vehicles/${vehicle.id}/view`;
+    const width = 1000;
+    const height = 800;
 
-    this.windowManagerService.openOnPrimaryMonitor(url, 1000, 800).subscribe({
-      next: (response) => {
-        if (!response.success) {
-          console.error('Pencere açılamadı:', response.message);
-          // Fallback: Modal kullan
-          this.viewingVehicle.set(vehicle);
-          this.showVehicleView.set(true);
+    try {
+      // Modern API: Window Management API (Chrome 100+, Edge 100+)
+      // @ts-ignore - Window Management API henüz TypeScript'te tam desteklenmiyor
+      if ('getScreenDetails' in window) {
+        // @ts-ignore
+        const screenDetails = await window.getScreenDetails();
+        // @ts-ignore
+        const primaryScreen = screenDetails.screens.find((s: any) => s.isPrimary) || screenDetails.screens[0];
+
+        const left = primaryScreen.availLeft + 50;
+        const top = primaryScreen.availTop + 50;
+
+        const features = `width=${width},height=${height},left=${left},top=${top},screenX=${left},screenY=${top}`;
+        const popup = window.open(url, '_blank', features);
+
+        if (popup) {
+          popup.focus();
+          return;
         }
-      },
-      error: (error) => {
-        console.error('Pencere açma hatası:', error);
-        // Fallback: Modal kullan
-        this.viewingVehicle.set(vehicle);
-        this.showVehicleView.set(true);
       }
-    });
+    } catch (error) {
+      console.log('Window Management API kullanılamadı, standart yöntem deneniyor...');
+    }
+
+    // Fallback: Standart yöntem - Ana ekranı tahmin et
+    // Ana ekran genellikle koordinat 0,0'dadır
+    const currentScreen = window.screen;
+    const isOnPrimaryScreen = currentScreen.availLeft === 0 && currentScreen.availTop === 0;
+
+    let left = 50;
+    let top = 50;
+
+    if (!isOnPrimaryScreen) {
+      // Eğer şu an ana ekranda değilsek, koordinat 0,0'a (ana ekran) git
+      left = -currentScreen.availLeft + 50;
+      top = -currentScreen.availTop + 50;
+    }
+
+    const features = [
+      `width=${width}`,
+      `height=${height}`,
+      `left=${left}`,
+      `top=${top}`,
+      `screenX=${left}`,
+      `screenY=${top}`,
+      'resizable=yes',
+      'scrollbars=yes',
+      'status=yes',
+      'toolbar=no',
+      'menubar=no',
+      'location=no'
+    ].join(',');
+
+    const popup = window.open(url, '_blank', features);
+
+    if (popup) {
+      popup.focus();
+      // Ek kontrol: 100ms sonra pozisyonu garanti altına al
+      setTimeout(() => {
+        try {
+          popup.moveTo(left, top);
+          popup.focus();
+        } catch (e) {
+          console.log('Pencere pozisyonu ayarlanamadı');
+        }
+      }, 100);
+    } else {
+      // Popup engellendi, fallback modal kullan
+      console.warn('Popup engellendi, modal açılıyor...');
+      this.viewingVehicle.set(vehicle);
+      this.showVehicleView.set(true);
+    }
   }
 
   closeVehicleView(): void {
