@@ -4,7 +4,7 @@
     {
       "label": "Backend - NestJS",
       "type": "shell",
-      "command": "npm run start:dev",
+      "command": "npm.cmd run start:dev",
       "options": {
         "cwd": "${workspaceFolder}/backend"
       },
@@ -14,7 +14,7 @@
     {
       "label": "Frontend - Angular",
       "type": "shell",
-      "command": "npm start",
+      "command": "npm.cmd start",
       "options": {
         "cwd": "${workspaceFolder}/frontend"
       },
